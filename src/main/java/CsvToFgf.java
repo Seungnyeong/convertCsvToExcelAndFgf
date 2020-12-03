@@ -8,30 +8,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class CsvToFgf {
 
 
-    public static List<List<String>> readCsvFile() {
+    public static List<List<String>> readCsvFile() throws IOException {
         List<List<String>> ret = new ArrayList<>();
-        BufferedReader br = null;
+        BufferedReader br;
 
         try {
             br = Files.newBufferedReader(Paths.get("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset2_poi2.csv"));
-            String line = "";
-
+            String line;
+            List<String> tmpList;
             while((line = br.readLine()) != null) {
-                List<String> tmpList = new ArrayList<String>();
                 String arr[] = line.split(",");
                 tmpList = Arrays.asList(arr);
                 ret.add(tmpList);
             }
             return ret;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw e;
         }
-        return ret;
     }
 
     public static List<FgfVO> convertToFgf(List<List<String>> list) {
@@ -64,14 +61,11 @@ public class CsvToFgf {
                 fw.write(fgfList.get(i).getCategory_s()+ "\n");
             }
 
-        } catch ( Exception e) {
-
+        } catch ( IOException e) {
+            throw e;
         } finally {
             fw.flush();
             fw.close();
         }
-
-
-
     }
 }
