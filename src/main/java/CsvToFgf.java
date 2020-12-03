@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CsvToFgf {
 
@@ -33,19 +35,16 @@ public class CsvToFgf {
     }
 
     public static List<FgfVO> convertToFgf(List<List<String>> list) {
-        FgfVO vo;
+
         List<FgfVO> listFgf = new ArrayList<>();
-        int i;
-        for(i = 0; i < list.size(); i ++) {
-            vo = new FgfVO();
-            vo.setPk(list.get(i).get(0));
-            vo.setSentense(list.get(i).get(1));
-            vo.setCategory_l(list.get(i).get(2));
-            vo.setCategory_m(list.get(i).get(3));
-            vo.setCategory_s(list.get(i).get(4));
-            listFgf.add(vo);
-        }
-        return listFgf;
+        list.stream().map(s->listFgf.add(new FgfVO.Builder()
+                .setPk(s.get(0))
+                .setSentense(s.get(1))
+                .setCategory_l(s.get(2))
+                .setCategory_m(s.get(3))
+                .setCategory_s(s.get(4))
+        .build())).collect(Collectors.toList());
+       return listFgf;
 
     }
 
