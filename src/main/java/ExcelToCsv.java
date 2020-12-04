@@ -2,12 +2,11 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ExcelToCsv {
     private final static String QUOTE="\"";
     private final static String ESCAPED_QUOTE="\\\"\\\"";
-    private final static String COMMA=",";
+    private final static String COMMA="|";
     private final static String NEW_LINE="\n";
     private Workbook wb = null;
     private ArrayList<ArrayList> data = null;
@@ -119,15 +118,15 @@ public class ExcelToCsv {
             for (int i = 0; i <= idx; i++) {
                 if ( i == 0) {
                     line.add(getData(r.getCell(i)));
-                } else if ( i == 10) {
-                    line.add(getData(r.getCell(i)));
-                } else if( i == 6) {
+                } else if ( i == 6) {
                     line.add(getData(r.getCell(i)));
                 } else if( i == 7) {
                     line.add(getData(r.getCell(i)));
-                } else if( i == 10) {
+                } else if( i == 9) {
                     line.add(getData(r.getCell(i)));
                 } else if( i == 11) {
+                    line.add(getData(r.getCell(i)));
+                } else if( i == 13) {
                     line.add(getData(r.getCell(i)));
                 }
             }
@@ -152,7 +151,7 @@ public class ExcelToCsv {
 
     public static void main(String[] args) throws Exception {
 
-        new ExcelToCsv(new File("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset2.xlsx"), new File("/Users/sn/IdeaProjects/promise/src/main/resources/file"));
+        new ExcelToCsv(new File("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset_mid_test.xlsx"), new File("/Users/sn/IdeaProjects/promise/src/main/resources/file"));
     }
 
     class ExcelFilenameFilter implements FilenameFilter {

@@ -7,35 +7,28 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CsvToFgf {
-
-
+    public final static String type = "model";
     public static List<List<String>> readCsvFile() throws IOException {
         List<List<String>> ret = new ArrayList<>();
-        BufferedReader br;
-
-        try {
-            br = Files.newBufferedReader(Paths.get("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset2_poi2.csv"));
-            String line;
-            List<String> tmpList;
-            while((line = br.readLine()) != null) {
-                String arr[] = line.split(",");
-                tmpList = Arrays.asList(arr);
-                ret.add(tmpList);
-            }
-            return ret;
-        } catch (IOException e) {
-            throw e;
+        BufferedReader br = Files.newBufferedReader(Paths.get("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset_mid_"+ type +"_poi2.csv"));
+        String line;
+        List<String> tmpList;
+        while((line = br.readLine()) != null) {
+            String arr[] = line.split("\\|");
+            tmpList = Arrays.asList(arr);
+            ret.add(tmpList);
         }
+        return ret;
     }
 
     public static List<FgfVO> convertToFgf(List<List<String>> list) {
-
         List<FgfVO> listFgf = new ArrayList<>();
-        list.stream().map(s->listFgf.add(new FgfVO.Builder()
-                .setPk(s.get(0))
+        list.stream().map( s-> listFgf.add(new FgfVO.Builder()
+                .setPk(s.get(0) + UUID.randomUUID())
                 .setSentense(s.get(1))
                 .setCategory_l(s.get(2))
                 .setCategory_m(s.get(3))
@@ -48,7 +41,7 @@ public class CsvToFgf {
     public static void main(String[] args) throws IOException {
         List<List<String>> result = readCsvFile();
         List<FgfVO> fgfList = convertToFgf(result);
-        String filename = "/Users/sn/IdeaProjects/promise/src/main/resources/file/cls_stt_mid.fgf";
+        String filename = "/Users/sn/IdeaProjects/promise/src/main/resources/file/stt_cls_"+ type +".fgf";
         FileWriter fw = null;
         try{
             File file = new File(filename);
