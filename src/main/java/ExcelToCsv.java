@@ -10,11 +10,12 @@ public class ExcelToCsv {
     private final static String NEW_LINE="\n";
     private Workbook wb = null;
     private ArrayList<ArrayList> data = null;
-    private int maxWidth = 5;
+    private int maxWidth = 7;
     private DataFormatter fmt = null;
     private FormulaEvaluator evl = null;
     private int initPo = 1;
 
+    private final static String SELECTED_SHEET_NAME = "test";
 
     public ExcelToCsv(File src, File dest) throws IOException, InvalidFormatException {
         validateArgs(src, dest);
@@ -42,7 +43,7 @@ public class ExcelToCsv {
     }
 
     private String getCsvFileName(File xls) {
-        return xls.getName().substring(0, xls.getName().lastIndexOf(".")) + "_poi2.csv";
+        return xls.getName().substring(0, xls.getName().lastIndexOf(".")) + "_poi2_"+ SELECTED_SHEET_NAME +".csv";
     }
 
     private void openWorkbook(File f) throws IOException, InvalidFormatException {
@@ -61,13 +62,19 @@ public class ExcelToCsv {
         data = new ArrayList<ArrayList>();
         for (int i = 0; i < wb.getNumberOfSheets(); i++) {
             Sheet s = wb.getSheetAt(i);
-            if (s.getPhysicalNumberOfRows() > 0) {
-                for (int j =0; j <= s.getLastRowNum(); j++) {
-                    addRowToCsv(s.getRow(j));
+            String sheetName = s.getSheetName();
+            if( SELECTED_SHEET_NAME.equalsIgnoreCase(sheetName)) {
+                if (s.getPhysicalNumberOfRows() > 0) {
+                    for (int j =0; j <= s.getLastRowNum(); j++) {
+                        addRowToCsv(s.getRow(j));
+                    }
                 }
+
             }
         }
+
     }
+
 
     private void saveCsvFile(File f) throws IOException {
         BufferedWriter bw = null;
@@ -116,21 +123,22 @@ public class ExcelToCsv {
         if(r != null) {
             int idx = r.getLastCellNum();
             for (int i = 0; i <= idx; i++) {
-                if ( i == 0) {
+                if ( i == 0) { // pk
                     line.add(getData(r.getCell(i)));
-                } else if ( i == 6) {
+                } else if ( i == 6) { // sentence
                     line.add(getData(r.getCell(i)));
-                } else if( i == 7) {
+                } else if ( i == 7) { // category_l
                     line.add(getData(r.getCell(i)));
-                } else if( i == 9) {
+                } else if ( i== 9) { // category_m
                     line.add(getData(r.getCell(i)));
-                } else if( i == 11) {
+                } else if ( i == 10) { // category_m_code
                     line.add(getData(r.getCell(i)));
-                } else if( i == 13) {
+                } else if ( i == 12) { // category_s
+                    line.add(getData(r.getCell(i)));
+                } else if ( i == 13 ) { // category_s_code
                     line.add(getData(r.getCell(i)));
                 }
             }
-
         }
         data.add(line);
     }
@@ -151,7 +159,7 @@ public class ExcelToCsv {
 
     public static void main(String[] args) throws Exception {
 
-        new ExcelToCsv(new File("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset_mid_test.xlsx"), new File("/Users/sn/IdeaProjects/promise/src/main/resources/file"));
+        new ExcelToCsv(new File("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset.xlsx"), new File("/Users/sn/IdeaProjects/promise/src/main/resources/file"));
     }
 
     class ExcelFilenameFilter implements FilenameFilter {
