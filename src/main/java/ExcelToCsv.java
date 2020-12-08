@@ -14,9 +14,8 @@ public class ExcelToCsv {
     private DataFormatter fmt = null;
     private FormulaEvaluator evl = null;
     private int initPo = 1;
-
-    private final static String SELECTED_SHEET_NAME = "test";
-
+    private final static String SELECTED_SHEET_NAME = "model";
+    private final static String BASE_FILE_PATH = "/Users/sn/IdeaProjects/promise/src/main/resources/file/";
     public ExcelToCsv(File src, File dest) throws IOException, InvalidFormatException {
         validateArgs(src, dest);
         File[] files = src.isDirectory() ? src.listFiles(new ExcelFilenameFilter()) : new File[]{src};
@@ -43,7 +42,7 @@ public class ExcelToCsv {
     }
 
     private String getCsvFileName(File xls) {
-        return xls.getName().substring(0, xls.getName().lastIndexOf(".")) + "_poi2_"+ SELECTED_SHEET_NAME +".csv";
+        return xls.getName().substring(0, xls.getName().lastIndexOf(".")) + "_" + SELECTED_SHEET_NAME +".csv";
     }
 
     private void openWorkbook(File f) throws IOException, InvalidFormatException {
@@ -159,7 +158,7 @@ public class ExcelToCsv {
 
     public static void main(String[] args) throws Exception {
 
-        new ExcelToCsv(new File("/Users/sn/IdeaProjects/promise/src/main/resources/file/dataset.xlsx"), new File("/Users/sn/IdeaProjects/promise/src/main/resources/file"));
+        new ExcelToCsv(new File(BASE_FILE_PATH.concat("dataset.xlsx")), new File(BASE_FILE_PATH));
     }
 
     class ExcelFilenameFilter implements FilenameFilter {

@@ -7,28 +7,26 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CsvToFgf {
-    public final static String SELECTED_SHEET_NAME = "model";
-    public final static String ESCAPE_ENTER = "\n";
-    public final static String BASE_FILE_PATH = "/Users/sn/IdeaProjects/promise/src/main/resources/file/";
+    private final static String SELECTED_SHEET_NAME = "test";
+    private final static String BASE_FILE_PATH = "/Users/sn/IdeaProjects/promise/src/main/resources/file/";
 
-    public static List<List<String>> readCsvFile() throws IOException {
+    private static List<List<String>> readCsvFile() throws IOException {
         List<List<String>> ret = new ArrayList<>();
-        Files.lines(Paths.get(BASE_FILE_PATH.concat("dataset_poi2_").concat(SELECTED_SHEET_NAME).concat(".csv")), StandardCharsets.UTF_8)
+        Files.lines(Paths.get(BASE_FILE_PATH.concat("dataset_").concat(SELECTED_SHEET_NAME).concat(".csv")), StandardCharsets.UTF_8)
+                .parallel()
                 .map(line -> Arrays.asList(line.split("\\|")))
                 .filter(ret::add)
-                .parallel()
                 .collect(Collectors.toList());
         return ret;
     }
 
-    public static List<FgfVO> convertToFgf(List<List<String>> list) {
+    private static List<FgfVO> convertToFgf(List<List<String>> list) {
         List<FgfVO> listFgf = new ArrayList<>();
         list.stream().map( s-> listFgf.add(new FgfVO.Builder()
-                .setPk(s.get(0).concat(UUID.randomUUID().toString()))
+                .setPk(s.get(0))
                 .setSentence(s.get(1))
                 .setCategory_l(s.get(2))
                 .setCategory_m(s.get(3))
@@ -44,19 +42,22 @@ public class CsvToFgf {
         List<FgfVO> fgfList = convertToFgf(result);
         String filepath = BASE_FILE_PATH.concat("stt_cls_").concat(SELECTED_SHEET_NAME).concat(".fgf");
         FileWriter fw = null;
+        File file = new File(filepath);
+
         try{
             //TODO Files.write and Stream API 이용하여 file write 방법 문의
-            File file = new File(filepath);
+            boolean removeFileFlag = file.exists() ? file.delete() : false;
+            System.out.println(SELECTED_SHEET_NAME + "fgf 파일 삭제 : " + removeFileFlag);
             fw = new FileWriter(file, true);
 
             for (int i =0 ; i < fgfList.size(); i++) {
-                fw.write(fgfList.get(i).getPk().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getSentence().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getCategory_l().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getCategory_m().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getCategory_m_code().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getCategory_s().concat(ESCAPE_ENTER));
-                fw.write(fgfList.get(i).getCategory_s_code().concat(ESCAPE_ENTER));
+                fw.write(fgfList.get(i).getPk());
+                fw.write(fgfList.get(i).getSentence());
+                fw.write(fgfList.get(i).getCategory_l());
+                fw.write(fgfList.get(i).getCategory_m());
+                fw.write(fgfList.get(i).getCategory_m_code());
+                fw.write(fgfList.get(i).getCategory_s());
+                fw.write(fgfList.get(i).getCategory_s_code());
             }
 
         } catch ( IOException e) {
@@ -64,6 +65,7 @@ public class CsvToFgf {
         } finally {
             fw.flush();
             fw.close();
+            System.out.println(file.exists() == true ? SELECTED_SHEET_NAME + "fgf 파일 생성 성공 : " + filepath : "파일 생성 실패[x]");
         }
     }
 }
