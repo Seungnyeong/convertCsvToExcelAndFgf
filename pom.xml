@@ -19,6 +19,19 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.12</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
@@ -30,6 +43,7 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
